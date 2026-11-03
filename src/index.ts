@@ -9,13 +9,16 @@ import express, { type Express } from "express";
 const app: Express = express();
 const PORT = 8080;
 
-app.use("/app", middlewareMetricsLaunch, express.static("./src/app"));
 app.use(middlewareLogResponses);
+app.use(express.json());
+
+app.use("/app", middlewareMetricsLaunch, express.static("./src/app"));
 
 app.get("/api/healthz", handlerReadiness);
+app.post("/api/validate_chirp", handlerValidateChirp);
+
 app.get("/admin/metrics", handlerMetrics);
 app.post("/admin/reset", handlerReset);
-app.post("/api/validate_chirp", handlerValidateChirp);
 
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

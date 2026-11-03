@@ -8,26 +8,21 @@ export function handlerValidateChirp(req: Request, res: Response) {
         body: string;
     };
 
-    let body = "";
+    const params: parameters = req.body;
+    if (params.body.length > 140) {
+        respondWithError(res, 400, "Chirp is too long");
+        return;
+    }
 
-    req.on("data", (chunk) => {
-        body += chunk;
-    });
+    const badWords = ["kerfuffle", "sharbert", "fornax"];
+    const words = params.body.split(" ");
+    for (let i = 0; i < words.length; i++) {
+        if (badWords.includes(words[i].toLowerCase())) {
+            words[i] = "****";
+        } 
+    }
 
-    let params: parameters;
-    req.on("end", () => {
-        try {
-            params = JSON.parse(body);
-        } catch (e) {
-            respondWithError(res, 400, "Invalid JSON");
-            return;
-        }
-        if (params.body.length > 140) {
-            respondWithError(res, 400, "Chirp is too long");
-            res.status(400).send(JSON.stringify({ error: "Chirp is too long" }));
-            return;
-        }
-        respondWithJSON(res, 200, { valid: true })
-    })
+    const cleanedBody  = words.join(" ");
+    respondWithJSON(res, 200, { cleanedBody: cleanedBody });
 }
 
