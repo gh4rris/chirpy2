@@ -3,6 +3,7 @@ import { handlerReadiness } from "./api/readiness.js";
 import { handlerMetrics, handlerReset } from "./api/metrics.js";
 import { errorMiddleware, middlewareLogResponses, middlewareMetricsLaunch } from "./api/middleware.js";
 import { handlerValidateChirp } from "./api/chirps.js";
+import { handlerCreateUser } from "./api/users.js";
 
 import express, { type Express } from "express";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -26,6 +27,9 @@ app.get("/api/healthz", (req, res, next) => {
 app.post("/api/validate_chirp", (req, res, next) => {
     Promise.resolve(handlerValidateChirp(req, res)).catch(next);
 });
+app.post("/api/users", (req, res, next) => {
+    Promise.resolve(handlerCreateUser(req, res)).catch(next);
+})
 
 app.get("/admin/metrics", (req, res, next) => {
     Promise.resolve(handlerMetrics(req, res)).catch(next)
