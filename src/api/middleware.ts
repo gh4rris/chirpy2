@@ -15,7 +15,7 @@ export function middlewareLogResponses(req: Request, res: Response, next: NextFu
 }
 
 export function middlewareMetricsLaunch(_: Request, __: Response, next: NextFunction): void {
-    config.fileServerHits += 1;
+    config.api.fileServerHits++;
     next();
 }
 

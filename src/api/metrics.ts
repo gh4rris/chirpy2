@@ -7,13 +7,13 @@ export function handlerMetrics(_: Request, res: Response): void {
     res.send(`<html>
   <body>
     <h1>Welcome, Chirpy Admin</h1>
-    <p>Chirpy has been visited ${config.fileServerHits} times!</p>
+    <p>Chirpy has been visited ${config.api.fileServerHits} times!</p>
   </body>
 </html>`);
 }
 
 export function handlerReset(_: Request, res: Response): void {
-    config.fileServerHits = 0;
+    config.api.fileServerHits = 0;
     res.write("Hits reset to 0");
     res.end();
 }

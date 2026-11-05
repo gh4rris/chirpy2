@@ -4,9 +4,9 @@ import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
   schema: "./src/db/schema.ts",
-  out: "./src/db/migrations",
+  out: config.db.migrationConfig.migrationsFolder,
   dialect: "postgresql",
   dbCredentials: {
-    url: config.dbURL
+    url: config.db.url
   },
 });
