@@ -1,29 +1,50 @@
 import { BadRequestError } from "./errors.js"
+import { createChirp } from "../db/queries/chirps.js";
 import { respondWithJSON } from "./json.js"
 
 import { type Request, type Response } from "express";
 
 
-export async function handlerValidateChirp(req: Request, res: Response) {
+export async function handlerCreateChirp(req: Request, res: Response) {
     type parameters = {
+        userId: string;
         body: string;
-    };
+    }
 
     const params: parameters = req.body;
+    if (!params.userId || !params.body) {
+        throw new BadRequestError("Missing required fields");
+    }
+
+    const cleanedBody = validateChirp(params.body);
+    const chirp = await createChirp({ userId: params.userId, body: cleanedBody });
+    if (!chirp) {
+        throw new Error("Could not create chirp");
+    }
+
+    respondWithJSON(res, 201, {
+        id: chirp.id,
+        createdAt: chirp.createdAt,
+        updatedAt: chirp.updatedAt,
+        body: chirp.body,
+        userId: chirp.userId
+    })
+}
+
+function validateChirp(body: string): string {
     const maxChirpLength = 140;
-    if (params.body.length > maxChirpLength) {
+    if (body.length > maxChirpLength) {
         throw new BadRequestError(`Chirp is too long. Max length is ${maxChirpLength}`);
     }
 
     const badWords = ["kerfuffle", "sharbert", "fornax"];
-    const words = params.body.split(" ");
+    const words = body.split(" ");
     for (let i = 0; i < words.length; i++) {
         if (badWords.includes(words[i].toLowerCase())) {
             words[i] = "****";
         } 
     }
 
-    const cleanedBody  = words.join(" ");
-    respondWithJSON(res, 200, { cleanedBody: cleanedBody });
+    return words.join(" ");
 }
 

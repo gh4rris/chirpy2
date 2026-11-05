@@ -8,6 +8,20 @@
       "when": 1793801713819,
       "tag": "0000_shocking_whirlwind",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793898242266,
+      "tag": "0001_absurd_beast",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793898570470,
+      "tag": "0002_normal_hulk",
+      "breakpoints": true
     }
   ]
 }
