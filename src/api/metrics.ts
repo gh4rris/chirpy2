@@ -12,8 +12,3 @@ export function handlerMetrics(_: Request, res: Response): void {
 </html>`);
 }
 
-export function handlerReset(_: Request, res: Response): void {
-    config.api.fileServerHits = 0;
-    res.write("Hits reset to 0");
-    res.end();
-}

@@ -1,9 +1,10 @@
 import { config } from "./config.js";
 import { handlerReadiness } from "./api/readiness.js";
-import { handlerMetrics, handlerReset } from "./api/metrics.js";
+import { handlerMetrics } from "./api/metrics.js";
+import { handlerReset } from "./api/reset.js";
 import { errorMiddleware, middlewareLogResponses, middlewareMetricsLaunch } from "./api/middleware.js";
 import { handlerCreateUser } from "./api/users.js";
-import { handlerCreateChirp } from "./api/chirps.js";
+import { handlerCreateChirp, handlerGetChirp, handlerGetChirps } from "./api/chirps.js";
 
 import express, { type Express } from "express";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -24,12 +25,18 @@ app.use("/app", middlewareMetricsLaunch, express.static("./src/app"));
 app.get("/api/healthz", (req, res, next) => {
     Promise.resolve(handlerReadiness(req, res)).catch(next);
 });
+app.get("/api/chirps", (req, res, next) => {
+    Promise.resolve(handlerGetChirps(req, res)).catch(next)
+})
+app.get("/api/chirps/:chirpId", (req, res, next) => {
+    Promise.resolve(handlerGetChirp(req, res)).catch(next)
+})
 app.post("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerCreateChirp(req, res)).catch(next);
-})
+});
 app.post("/api/users", (req, res, next) => {
     Promise.resolve(handlerCreateUser(req, res)).catch(next);
-})
+});
 
 app.get("/admin/metrics", (req, res, next) => {
     Promise.resolve(handlerMetrics(req, res)).catch(next)
