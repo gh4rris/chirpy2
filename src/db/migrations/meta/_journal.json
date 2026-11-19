@@ -22,6 +22,13 @@
       "when": 1793898570470,
       "tag": "0002_normal_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795018522407,
+      "tag": "0003_first_venom",
+      "breakpoints": true
     }
   ]
 }
