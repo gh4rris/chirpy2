@@ -1,6 +1,6 @@
-import { UserNotAuthenticatedError } from "./api/errors.js";
+import { UserNotAuthenticatedError, BadRequestError } from "./api/errors.js";
 import { makeJWT, validateJWT } from "./auth.js";
-import { hashPassword, checkPasswordHash } from "./auth.js";
+import { hashPassword, checkPasswordHash, extractBearerToken } from "./auth.js";
 
 import { describe, it, expect, beforeAll } from "vitest";
 
@@ -54,4 +54,21 @@ describe("JWT Functions", () => {
     it("should throw error for wrong secret", () => {
         expect(() => validateJWT(tokenString, "wrongsecret")).toThrow(UserNotAuthenticatedError);
     })
+});
+
+describe("Extract Bearer Token", () => {
+    const authorization = "Bearer 123";
+
+    it("should extract valid token", () => {
+        const result = extractBearerToken(authorization);
+        expect(result).toBe("123");
+    });
+
+    it("should throw error for invalid token format", () => {
+        expect(() => extractBearerToken("Bearer123")).toThrow(BadRequestError);
+    });
+
+    it("should throw error for undefined authorization", () => {
+        expect(() => extractBearerToken(undefined)).toThrow(BadRequestError);
+    });
 })

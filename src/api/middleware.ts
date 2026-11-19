@@ -1,5 +1,5 @@
 import { config } from "../config.js";
-import { BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError } from "./errors.js";
+import { BadRequestError, UserNotAuthenticatedError, ForbiddenError, NotFoundError } from "./errors.js";
 import { respondWithError } from "./json.js";
 
 import { type NextFunction, type Request, type Response } from "express";
@@ -25,7 +25,7 @@ export function errorMiddleware(err: Error, _: Request, res: Response, __: NextF
     if (err instanceof BadRequestError) {
         status = 400;
         message = err.message;
-    } else if (err instanceof UnauthorizedError) {
+    } else if (err instanceof UserNotAuthenticatedError) {
         status = 401;
         message = err.message;
     } else if (err instanceof ForbiddenError) {

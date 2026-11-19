@@ -26,9 +26,14 @@ app.use("/app", middlewareMetricsLaunch, express.static("./src/app"));
 app.get("/api/healthz", (req, res, next) => {
     Promise.resolve(handlerReadiness(req, res)).catch(next);
 });
+
 app.post("/api/login/", (req, res, next) => {
     Promise.resolve(handlerLogin(req, res)).catch(next);
 })
+app.post("/api/users", (req, res, next) => {
+    Promise.resolve(handlerCreateUser(req, res)).catch(next);
+});
+
 app.get("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerGetChirps(req, res)).catch(next)
 })
@@ -37,9 +42,6 @@ app.get("/api/chirps/:chirpId", (req, res, next) => {
 })
 app.post("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerCreateChirp(req, res)).catch(next);
-});
-app.post("/api/users", (req, res, next) => {
-    Promise.resolve(handlerCreateUser(req, res)).catch(next);
 });
 
 app.get("/admin/metrics", (req, res, next) => {

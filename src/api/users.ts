@@ -1,4 +1,4 @@
-import { NewUser, UserResponse } from "../db/schema.js";
+import { type NewUser, type UserResponse } from "../db/schema.js";
 import { BadRequestError } from "./errors.js";
 import { createUser } from "../db/queries/users.js";
 import { respondWithJSON } from "./json.js";
