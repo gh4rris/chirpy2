@@ -1,7 +1,8 @@
-import { type UserResponse } from "../db/schema.js";
+import { type UserResponse } from "./users.js";
 import { BadRequestError, UserNotAuthenticatedError } from "./errors.js";
-import { checkPasswordHash } from "../auth.js";
+import { checkPasswordHash, makeRefreshToken } from "../auth.js";
 import { getUserByEmail } from "../db/queries/users.js";
+import { createRefreshToken } from "../db/queries/refresh_tokens.js";
 import { respondWithJSON } from "./json.js";
 import { makeJWT } from "../auth.js";
 
@@ -11,13 +12,13 @@ import { config } from "../config.js";
 
 type LoginResponse = UserResponse & {
     token: string;
+    refreshToken: string;
 }
 
 export async function handlerLogin(req: Request, res: Response) {
     type parameters = {
         email: string;
         password: string;
-        expiresInSeconds?: number;
     }
 
     const params: parameters = req.body;
@@ -31,19 +32,17 @@ export async function handlerLogin(req: Request, res: Response) {
         throw new UserNotAuthenticatedError("incorrect email or password")
     }
 
-    let expiresIn = config.jwt.defaultDuration;
-    if (params.expiresInSeconds && params.expiresInSeconds < config.jwt.defaultDuration) {
-        expiresIn = params.expiresInSeconds;
-    } 
-
-    const token = makeJWT(user.id, expiresIn, config.jwt.secret);
+    const access = makeJWT(user.id, config.jwt.defaultDuration, config.jwt.secret);
+    const refresh = makeRefreshToken();
+    const refreshToken = await createRefreshToken(refresh, user.id);
 
     respondWithJSON(res, 200, {
         id: user.id,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         email: user.email,
-        token: token
+        token: access,
+        refreshToken: refreshToken.token
     } satisfies LoginResponse);
 }
 

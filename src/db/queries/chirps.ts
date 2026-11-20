@@ -1,7 +1,7 @@
 import { chirps } from "../schema.js";
 import { NewChirp } from "../schema.js";
-
 import { db } from "../index.js";
+
 import { eq } from "drizzle-orm";
 
 

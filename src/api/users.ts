@@ -1,4 +1,4 @@
-import { type NewUser, type UserResponse } from "../db/schema.js";
+import { type NewUser } from "../db/schema.js";
 import { BadRequestError } from "./errors.js";
 import { createUser } from "../db/queries/users.js";
 import { respondWithJSON } from "./json.js";
@@ -6,6 +6,8 @@ import { hashPassword } from "../auth.js";
 
 import { type Request, type Response } from "express";
 
+
+export type UserResponse = Omit<NewUser, "hashedPassword">
 
 export async function handlerCreateUser(req: Request, res: Response) {
     type parameters = {

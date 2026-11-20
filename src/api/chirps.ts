@@ -14,7 +14,6 @@ export async function handlerCreateChirp(req: Request, res: Response) {
 
     const token = getBearerToken(req);
     const userId = validateJWT(token, config.jwt.secret);
-
     const params: parameters = req.body;
     if (!params.body) {
         throw new BadRequestError("Missing required fields");

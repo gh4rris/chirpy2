@@ -29,6 +29,13 @@
       "when": 1795018522407,
       "tag": "0003_first_venom",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795188410905,
+      "tag": "0004_acoustic_franklin_richards",
+      "breakpoints": true
     }
   ]
 }
