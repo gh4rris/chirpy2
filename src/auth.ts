@@ -52,7 +52,7 @@ export function validateJWT(tokenString: string, secret: string): string {
 export function extractBearerToken(authorization: string | undefined): string {
     const words = authorization?.split(" ");
     if (!words || words[0] != "Bearer") {
-        throw new BadRequestError("Invalid token")
+        throw new UserNotAuthenticatedError("Invalid token")
     }
     return words[1];
 }

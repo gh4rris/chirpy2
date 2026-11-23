@@ -57,14 +57,18 @@ export async function handlerRefreshAccessToken(req: Request, res: Response) {
 
     const access = makeJWT(refreshToken.userId, config.jwt.defaultDuration, config.jwt.secret);
 
+    type response = {
+        token: string;
+    };
+
     respondWithJSON(res, 200, {
         token: access
-    });
+    } satisfies response);
 }
 
 export async function handlerRevokeRefreshToken(req: Request, res: Response) {
     const tokenStr = getBearerToken(req);
     await revokeRefreshToken(tokenStr);
 
-    respondWithJSON(res, 204, {})
+    res.status(204).send();
 }
