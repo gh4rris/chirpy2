@@ -5,7 +5,7 @@ import { handlerReset } from "./api/reset.js";
 import { errorMiddleware, middlewareLogResponses, middlewareMetricsLaunch } from "./api/middleware.js";
 import { handlerCreateUser } from "./api/users.js";
 import { handlerCreateChirp, handlerGetChirp, handlerGetChirps } from "./api/chirps.js";
-import { handlerLogin } from "./api/auth.js";
+import { handlerLogin, handlerRefreshAccessToken, handlerRevokeRefreshToken } from "./api/auth.js";
 
 import express, { type Express } from "express";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -30,6 +30,13 @@ app.get("/api/healthz", (req, res, next) => {
 app.post("/api/login/", (req, res, next) => {
     Promise.resolve(handlerLogin(req, res)).catch(next);
 })
+app.post("/api/refresh/", (req, res, next) => {
+    Promise.resolve(handlerRefreshAccessToken(req, res)).catch(next);
+});
+app.post("/api/revoke/", (req, res, next) => {
+    Promise.resolve(handlerRevokeRefreshToken(req, res).catch(next));
+})
+
 app.post("/api/users", (req, res, next) => {
     Promise.resolve(handlerCreateUser(req, res)).catch(next);
 });

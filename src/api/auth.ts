@@ -1,8 +1,8 @@
 import { type UserResponse } from "./users.js";
 import { BadRequestError, UserNotAuthenticatedError } from "./errors.js";
-import { checkPasswordHash, makeRefreshToken } from "../auth.js";
+import { checkPasswordHash, getBearerToken, makeRefreshToken } from "../auth.js";
 import { getUserByEmail } from "../db/queries/users.js";
-import { createRefreshToken } from "../db/queries/refresh_tokens.js";
+import { createRefreshToken, revokeRefreshToken, userForRefreshToken } from "../db/queries/refresh_tokens.js";
 import { respondWithJSON } from "./json.js";
 import { makeJWT } from "../auth.js";
 
@@ -46,3 +46,25 @@ export async function handlerLogin(req: Request, res: Response) {
     } satisfies LoginResponse);
 }
 
+export async function handlerRefreshAccessToken(req: Request, res: Response) {
+    const tokenStr = getBearerToken(req);
+    const refreshToken = await userForRefreshToken(tokenStr);
+
+    const revoked = refreshToken.revokedAt ? refreshToken.revokedAt < new Date(Date.now()) : false;
+    if (!refreshToken || revoked) {
+        throw new UserNotAuthenticatedError("Invalid refresh token");
+    }
+
+    const access = makeJWT(refreshToken.userId, config.jwt.defaultDuration, config.jwt.secret);
+
+    respondWithJSON(res, 200, {
+        token: access
+    });
+}
+
+export async function handlerRevokeRefreshToken(req: Request, res: Response) {
+    const tokenStr = getBearerToken(req);
+    await revokeRefreshToken(tokenStr);
+
+    respondWithJSON(res, 204, {})
+}
