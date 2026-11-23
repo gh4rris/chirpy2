@@ -1,4 +1,4 @@
-import { BadRequestError, UserNotAuthenticatedError } from "./api/errors.js";
+import { BadRequestError, ForbiddenError, UserNotAuthenticatedError } from "./api/errors.js";
 import { config } from "./config.js";
 
 import { type JwtPayload } from "jsonwebtoken";

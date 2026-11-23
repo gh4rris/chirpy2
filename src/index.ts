@@ -4,7 +4,7 @@ import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { errorMiddleware, middlewareLogResponses, middlewareMetricsLaunch } from "./api/middleware.js";
 import { handlerCreateUser, handlerUpdateUser } from "./api/users.js";
-import { handlerCreateChirp, handlerGetChirp, handlerGetChirps } from "./api/chirps.js";
+import { handlerCreateChirp, handlerDeleteChirp, handlerGetChirp, handlerGetChirps } from "./api/chirps.js";
 import { handlerLogin, handlerRefreshAccessToken, handlerRevokeRefreshToken } from "./api/auth.js";
 
 import express, { type Express } from "express";
@@ -27,13 +27,13 @@ app.get("/api/healthz", (req, res, next) => {
     Promise.resolve(handlerReadiness(req, res)).catch(next);
 });
 
-app.post("/api/login/", (req, res, next) => {
+app.post("/api/login", (req, res, next) => {
     Promise.resolve(handlerLogin(req, res)).catch(next);
 })
-app.post("/api/refresh/", (req, res, next) => {
+app.post("/api/refresh", (req, res, next) => {
     Promise.resolve(handlerRefreshAccessToken(req, res)).catch(next);
 });
-app.post("/api/revoke/", (req, res, next) => {
+app.post("/api/revoke", (req, res, next) => {
     Promise.resolve(handlerRevokeRefreshToken(req, res).catch(next));
 })
 
@@ -42,7 +42,7 @@ app.post("/api/users", (req, res, next) => {
 });
 app.put("/api/users", (req, res, next) => {
     Promise.resolve(handlerUpdateUser(req, res)).catch(next);
-})
+});
 
 app.get("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerGetChirps(req, res)).catch(next)
@@ -53,6 +53,9 @@ app.get("/api/chirps/:chirpId", (req, res, next) => {
 app.post("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerCreateChirp(req, res)).catch(next);
 });
+app.delete("/api/chirps/:chirpId", (req, res, next) => {
+    Promise.resolve(handlerDeleteChirp(req, res)).catch(next);
+})
 
 app.get("/admin/metrics", (req, res, next) => {
     Promise.resolve(handlerMetrics(req, res)).catch(next)
