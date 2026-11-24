@@ -11,6 +11,7 @@ import express, { type Express } from "express";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
+import { handlerPolkaWebhook } from "./api/webhooks.js";
 
 
 const migrationCient = postgres(config.db.url, { max: 1 });
@@ -55,7 +56,11 @@ app.post("/api/chirps", (req, res, next) => {
 });
 app.delete("/api/chirps/:chirpId", (req, res, next) => {
     Promise.resolve(handlerDeleteChirp(req, res)).catch(next);
-})
+});
+
+app.post("/api/polka/webhooks", (req, res, next) => {
+    Promise.resolve(handlerPolkaWebhook(req, res)).catch(next);
+});
 
 app.get("/admin/metrics", (req, res, next) => {
     Promise.resolve(handlerMetrics(req, res)).catch(next)

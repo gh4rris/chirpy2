@@ -24,3 +24,10 @@ export async function updateUser(userId: string, email: string, hashedPassword: 
     }).where(eq(users.id, userId)).returning();
     return result;
 } 
+
+export async function updateUserToChirpyRed(id: string) {
+    const [result] = await db.update(users).set({
+        isChirpyRed: true
+    }).where(eq(users.id, id)).returning();
+    return result;
+}

@@ -1,4 +1,4 @@
-import { type NewUser } from "../db/schema.js";
+import { type User, type NewUser } from "../db/schema.js";
 import { BadRequestError } from "./errors.js";
 import { createUser, updateUser } from "../db/queries/users.js";
 import { respondWithJSON } from "./json.js";
@@ -8,7 +8,7 @@ import { config } from "../config.js";
 import { type Request, type Response } from "express";
 
 
-export type UserResponse = Omit<NewUser, "hashedPassword">
+export type UserResponse = Omit<User, "hashedPassword">
 
 export async function handlerCreateUser(req: Request, res: Response) {
     type parameters = {
@@ -35,7 +35,8 @@ export async function handlerCreateUser(req: Request, res: Response) {
         id: user.id,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-        email: user.email
+        email: user.email,
+        isChirpyRed: user.isChirpyRed
     } satisfies UserResponse);
 }
 
@@ -43,7 +44,7 @@ export async function handlerUpdateUser(req: Request, res: Response) {
     type parameters = {
         email: string;
         password: string;
-    }
+    };
 
     const token = getBearerToken(req);
     const userId = validateJWT(token, config.jwt.secret);
@@ -61,6 +62,7 @@ export async function handlerUpdateUser(req: Request, res: Response) {
         id: user.id,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-        email: user.email
+        email: user.email,
+        isChirpyRed: user.isChirpyRed
     } satisfies UserResponse)
 }
