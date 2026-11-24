@@ -1,4 +1,4 @@
-import { BadRequestError, ForbiddenError, UserNotAuthenticatedError } from "./api/errors.js";
+import { UserNotAuthenticatedError } from "./api/errors.js";
 import { config } from "./config.js";
 
 import { type JwtPayload } from "jsonwebtoken";
@@ -41,10 +41,10 @@ export function validateJWT(tokenString: string, secret: string): string {
     try {
         decoded = jwt.verify(tokenString, secret) as JwtPayload;
     } catch (e) {
-        throw new UserNotAuthenticatedError("Invalid token")
+        throw new UserNotAuthenticatedError("Invalid token");
     }
     if (decoded.iss !== config.jwt.issuer || !decoded.sub) {
-        throw new UserNotAuthenticatedError("Invalid token")
+        throw new UserNotAuthenticatedError("Invalid token");
     }
     return decoded.sub;
 }
@@ -52,7 +52,7 @@ export function validateJWT(tokenString: string, secret: string): string {
 export function extractBearerToken(authorization: string | undefined): string {
     const words = authorization?.split(" ");
     if (!words || words[0] != "Bearer") {
-        throw new UserNotAuthenticatedError("Invalid token")
+        throw new UserNotAuthenticatedError("Invalid token");
     }
     return words[1];
 }
@@ -66,3 +66,13 @@ export function makeRefreshToken(): string {
     const token = crypto.randomBytes(32);
     return token.toString("hex");
 }
+
+export function getAPIKey(req: Request) {
+    const authHeader = req.get("Authorization");
+    const words = authHeader?.split(" ");
+    if (!words || words[0] != "ApiKey") {
+        throw new UserNotAuthenticatedError("Invalid token");
+    }
+    return words[1];
+}
+

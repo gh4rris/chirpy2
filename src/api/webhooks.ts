@@ -1,5 +1,7 @@
-import { BadRequestError, NotFoundError } from "./errors.js";
+import { BadRequestError, NotFoundError, UserNotAuthenticatedError } from "./errors.js";
+import { config } from "../config.js";
 import { updateUserToChirpyRed } from "../db/queries/users.js"
+import { getAPIKey } from "../auth.js";
 
 import { type Request, type Response } from "express";
 
@@ -15,6 +17,11 @@ export async function handlerPolkaWebhook(req: Request, res: Response) {
     const params: parameters = req.body;
     if (!params.event || !params.data) {
         throw new BadRequestError("Missing required fields");
+    }
+
+    const token = getAPIKey(req);
+    if (token !== config.api.polkaKey) {
+        throw new UserNotAuthenticatedError("Invalid token");
     }
 
     if (params.event !== "user.upgraded") {

@@ -1,3 +1,4 @@
+import { type NewChirp } from "../db/schema.js";
 import { BadRequestError, ForbiddenError, NotFoundError } from "./errors.js"
 import { createChirp, deleteChirp, getChirp, getChirps } from "../db/queries/chirps.js";
 import { respondWithJSON } from "./json.js"
@@ -20,7 +21,10 @@ export async function handlerCreateChirp(req: Request, res: Response) {
     }
 
     const cleanedBody = validateChirp(params.body);
-    const chirp = await createChirp({ userId: userId, body: cleanedBody });
+    const chirp = await createChirp({
+        userId: userId,
+        body: cleanedBody
+    } satisfies NewChirp);
     if (!chirp) {
         throw new Error("Could not create chirp");
     }

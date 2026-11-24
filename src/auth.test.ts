@@ -1,6 +1,7 @@
 import { UserNotAuthenticatedError, BadRequestError } from "./api/errors.js";
-import { makeJWT, validateJWT } from "./auth.js";
+import { makeJWT, validateJWT, getAPIKey } from "./auth.js";
 import { hashPassword, checkPasswordHash, extractBearerToken } from "./auth.js";
+import { Request } from "express";
 
 import { describe, it, expect, beforeAll } from "vitest";
 
@@ -71,4 +72,5 @@ describe("Extract Bearer Token", () => {
     it("should throw error for undefined authorization", () => {
         expect(() => extractBearerToken(undefined)).toThrow(BadRequestError);
     });
-})
+});
+
