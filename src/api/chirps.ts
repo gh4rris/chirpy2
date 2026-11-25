@@ -55,10 +55,25 @@ function validateChirp(body: string): string {
     return words.join(" ");
 }
 
-export async function handlerGetChirps(_: Request, res: Response) {
-    const chirps = await getChirps();
+export async function handlerGetChirps(req: Request, res: Response) {
+    let authorId = "";
+    let authorIdQuery = req.query.authorId;
+    if (typeof authorIdQuery === "string") {
+        authorId = authorIdQuery;
+    }
+    let sort = "asc";
+    let sortQuery = req.query.sort;
+    if (typeof sortQuery === "string") {
+        sort = sortQuery;
+    }
+
+    const chirps = await getChirps(authorId);
     if (!chirps) {
         throw new NotFoundError("No chirps found")
+    }
+
+    if (sort === "desc") {
+        chirps.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     }
 
     respondWithJSON(res, 200, chirps)
